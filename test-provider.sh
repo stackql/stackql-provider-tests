@@ -33,6 +33,8 @@ then
     unzip stackql_linux_amd64.zip
 fi
 
+ chmod +x stackql
+
 # do checks
 
 if [ -z "$anoncolcheck" ]; then
