@@ -26,6 +26,8 @@ registry = {
 
 iql = StackQL(exe='./stackql', registry=json.dumps(registry))
 
+print(iql.version())
+
 # SHOW SERVICES
 iql_query = "SHOW SERVICES IN %s" % provider
 
