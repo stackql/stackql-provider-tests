@@ -38,6 +38,7 @@ num_services = len(services)
 
 total_resources = 0
 total_selectable_resources = 0
+total_methods = 0
 
 # SHOW RESOURCES
 for serviceIx, serviceRow in services.iterrows():
@@ -59,6 +60,7 @@ for serviceIx, serviceRow in services.iterrows():
             iql_methods_query = "SHOW EXTENDED METHODS IN %s.%s.%s" % (provider, service, resource)
             methods = run_query(iql_methods_query)
             num_methods = len(methods)
+            total_methods = total_methods + num_methods
             print("%s methods in %s.%s.%s" % (num_methods, provider, service, resource))
 
             if len(methods.query("SQLVerb == 'SELECT'")) > 0:
@@ -74,6 +76,7 @@ for serviceIx, serviceRow in services.iterrows():
 
 print("%s services processed" % (num_services))
 print("%s total resources processed" % (total_resources))
+print("%s total methods available" % (total_methods))
 print("%s total selectable resources" % (total_selectable_resources))
 
 print(datetime.datetime.now() - start_time)
