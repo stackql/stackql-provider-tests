@@ -1,10 +1,7 @@
-# PROVIDER_REGISTRY_ROOT_DIR="$(pwd)"
-# REG='{"url": "file://'${PROVIDER_REGISTRY_ROOT_DIR}'", "localDocRoot": "'${PROVIDER_REGISTRY_ROOT_DIR}'", "verifyConfig": {"nopVerify": true}}'
-# nohup ./stackql --registry="${REG}" --pgsrv.port=5444 srv &
-# nohup ./stackql --pgsrv.port=5444 srv &
+import sys, datetime
 
-# print current time
-import datetime
+provider = sys.argv[1]
+
 start_time = datetime.datetime.now()
 
 import psycopg
@@ -33,8 +30,6 @@ def run_query(query):
             return pd.DataFrame([i.copy() for i in data])
       except Exception as e:
             print("cant run [%s]" % query)
-
-provider = "sumologic"
 
 # SHOW SERVICES
 iql_services_query = "SHOW SERVICES IN %s" % provider

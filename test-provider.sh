@@ -1,9 +1,19 @@
-provider=$1
-regpath=$2
-anoncolcheck=$3
+method=$1
+provider=$2
+regpath=$3
+anoncolcheck=$4
+
+if [ "$method" = "server" ]; then 
+    echo "running tests in server mode"
+elif [ "$method" = "exec" ]; then
+    echo "running tests in exec mode"
+else
+    echo "method (arg 1) must be either 'server' or 'exec'"
+    exit 1
+fi
 
 if [ -z "$provider" ]; then
-    echo "provider must be set"
+    echo "provider (arg 2) must be set"
     exit 1
 fi
 
@@ -15,10 +25,10 @@ fi
 
 echo "registry path: $regpath"
 
-# clone pystackql if not present
-
-if [ ! -d "pystackql" ]; then
-    git clone https://github.com/stackql/pystackql.git
+if [ "$method" = "exec" ]; then
+    if [ ! -d "pystackql" ]; then
+        git clone https://github.com/stackql/pystackql.git
+    fi
 fi
 
 # install packages
@@ -37,8 +47,26 @@ fi
 
 # do checks
 
-if [ -z "$anoncolcheck" ]; then
-    python3 test-provider.py $provider $regpath
-else
-    python3 test-provider.py $provider $regpath $anoncolcheck
+if [ "$method" = "exec" ]; then
+    if [ -z "$anoncolcheck" ]; then
+        python3 test-provider-exec.py $provider $regpath
+    else
+        python3 test-provider-exec.py $provider $regpath $anoncolcheck
+    fi
+elif [ "$method" = "server" ]; then
+    # set registry path
+    REG='{"url": "file://'${regpath}'", "localDocRoot": "'${regpath}'", "verifyConfig": {"nopVerify": true}}'
+
+    # start server
+    echo "starting server with registry: $REG"
+    nohup ./stackql --registry="${REG}" --pgsrv.port=5444 srv &
+    sleep 5
+
+    if [ -z "$anoncolcheck" ]; then
+        python3 test-provider-server.py $provider
+    else
+        # TODO implement anoncolcheck for server tests
+        python3 test-provider-server.py $provider $anoncolcheck
+    fi
 fi
+
