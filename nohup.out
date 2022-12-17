@@ -9,3 +9,4 @@ time="2022-12-16T19:35:48+11:00" level=error msg="an unexpected error got return
 time="2022-12-16T19:39:47+11:00" level=error msg="an unexpected error got returned while serving a client connection{error 26 0  write tcp 127.0.0.1:5444->127.0.0.1:35444: use of closed network connection}"
 time="2022-12-17T11:21:23+11:00" level=error msg="an unexpected error got returned while serving a client connection{error 26 0  write tcp 127.0.0.1:5444->127.0.0.1:35532: use of closed network connection}"
 time="2022-12-17T11:21:32+11:00" level=error msg="an unexpected error got returned while serving a client connection{error 26 0  write tcp 127.0.0.1:5444->127.0.0.1:35534: use of closed network connection}"
+time="2022-12-17T11:22:16+11:00" level=error msg="an unexpected error got returned while serving a client connection{error 26 0  write tcp 127.0.0.1:5444->127.0.0.1:35536: use of closed network connection}"
