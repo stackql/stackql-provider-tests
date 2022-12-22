@@ -20,7 +20,7 @@ def run_show_insert(command):
             r = conn.execute(command)
             return r.fetchall()
       except Exception as e:
-            if str(e).contains("error creating insert statement"):
+            if "error creating insert statement" in str(e):
                   print("ERROR [%s]" % str(e))
                   return None
             else:
