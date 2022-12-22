@@ -76,7 +76,6 @@ for serviceIx, serviceRow in services.iterrows():
 
             if len(methods.query("SQLVerb == 'INSERT'")) > 0:
                   iql_insert_query = "SHOW INSERT INTO %s.%s.%s" % (provider, service, resource)
-                  print("running %s..." % iql_insert_query)
                   show_insert = run_show_insert(iql_insert_query)
 
 print("%s services processed" % (num_services))
