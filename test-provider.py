@@ -15,12 +15,13 @@ conn = psycopg.connect(
 )
 
 def run_show_insert(command):
+      print("running %s..." % command)
       try:
             r = conn.execute(command)
             return r.fetchall()
       except Exception as e:
-            print("ERROR [%s]" % command)
-            print(e)
+            print("ERROR [%s]" % str(e))
+            sys.exit(1)
 
 def run_query(query):
       print("running %s..." % query)
@@ -29,7 +30,8 @@ def run_query(query):
             data = r.fetchall()
             return pd.DataFrame([i.copy() for i in data])
       except Exception as e:
-            print("cant run [%s]" % query)
+            print("ERROR [%s]" % str(e))
+            sys.exit(1)
 
 # SHOW SERVICES
 iql_services_query = "SHOW SERVICES IN %s" % provider

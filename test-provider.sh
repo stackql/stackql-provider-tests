@@ -1,20 +1,24 @@
-method=$1
-provider=$2
+provider=$1
+signed=$2
 regpath=$3
 anoncolcheck=$4
 
-if [ "$method" = "server" ]; then 
-    echo "running tests in server mode"
-elif [ "$method" = "exec" ]; then
-    echo "running tests in exec mode"
-else
-    echo "method (arg 1) must be either 'server' or 'exec'"
+# check for another stackql server running
+if [ -n "$(lsof -i :5444)" ]; then
+    echo "another server is running on port 5444, please stop it"
     exit 1
 fi
 
 if [ -z "$provider" ]; then
-    echo "provider (arg 2) must be set"
+    echo "provider (arg 1) must be set"
     exit 1
+fi
+
+if [ -z "$signed" ]; then
+    echo "signed (arg 2) must be set (true/false))"
+    exit 1
+else
+    SIGNED=$signed
 fi
 
 echo "testing provider: $provider"
@@ -24,12 +28,6 @@ if [ -z "$regpath" ]; then
 fi
 
 echo "registry path: $regpath"
-
-if [ "$method" = "exec" ]; then
-    if [ ! -d "pystackql" ]; then
-        git clone https://github.com/stackql/pystackql.git
-    fi
-fi
 
 # install packages
 
@@ -47,26 +45,21 @@ fi
 
 # do checks
 
-if [ "$method" = "exec" ]; then
-    if [ -z "$anoncolcheck" ]; then
-        python3 test-provider-exec.py $provider $regpath
-    else
-        python3 test-provider-exec.py $provider $regpath $anoncolcheck
-    fi
-elif [ "$method" = "server" ]; then
-    # set registry path
+# set registry path
+if [ "$SIGNED" = "true" ]; then
+    REG='{"url": "file://'${regpath}'", "localDocRoot": "'${regpath}'", "verifyConfig": {"nopVerify": false}}'
+else
     REG='{"url": "file://'${regpath}'", "localDocRoot": "'${regpath}'", "verifyConfig": {"nopVerify": true}}'
-
-    # start server
-    echo "starting server with registry: $REG"
-    nohup ./stackql --registry="${REG}" --pgsrv.port=5444 srv &
-    sleep 5
-
-    if [ -z "$anoncolcheck" ]; then
-        python3 test-provider-server.py $provider
-    else
-        # TODO implement anoncolcheck for server tests
-        python3 test-provider-server.py $provider $anoncolcheck
-    fi
 fi
 
+# start server
+echo "starting server with registry: $REG"
+nohup ./stackql --registry="${REG}" --pgsrv.port=5444 srv &
+sleep 5
+
+if [ -z "$anoncolcheck" ]; then
+    python3 test-provider.py $provider
+else
+    # TODO implement anoncolcheck for server tests
+    python3 test-provider.py $provider $anoncolcheck
+fi
