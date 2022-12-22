@@ -31,13 +31,13 @@ echo "registry path: $regpath"
 
 # install packages
 
-pip install -r requirements.txt
+pip install -q -r requirements.txt
 
 # download and unzip stackql binary
 
 if [ ! -f stackql ]
 then
-    wget https://releases.stackql.io/stackql/latest/stackql_linux_amd64.zip
+    wget -q https://releases.stackql.io/stackql/latest/stackql_linux_amd64.zip
     unzip stackql_linux_amd64.zip
 fi
 
