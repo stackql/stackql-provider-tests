@@ -52,10 +52,12 @@ else
     REG='{"url": "file://'${regpath}'", "localDocRoot": "'${regpath}'", "verifyConfig": {"nopVerify": true}}'
 fi
 
-# start server
-echo "starting server with registry: $REG"
-nohup ./stackql --registry="${REG}" --pgsrv.port=5444 srv &
-sleep 5
+# start server if not running
+if [ -z "$(ps -ef | grep stackql | grep -v grep)" ]; then
+    echo "starting server with registry: $REG"
+    nohup ./stackql --registry="${REG}" --pgsrv.port=5444 srv &
+    sleep 5
+fi
 
 if [ -z "$anoncolcheck" ]; then
     python3 test-provider.py $provider
