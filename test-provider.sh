@@ -53,10 +53,13 @@ else
 fi
 
 # start server if not running
+echo "checking if server is running"
 if [ -z "$(ps -ef | grep stackql | grep -v grep)" ]; then
     echo "starting server with registry: $REG"
     nohup ./stackql --registry="${REG}" --pgsrv.port=5444 srv &
     sleep 5
+else
+    echo "server is already running"
 fi
 
 if [ -z "$anoncolcheck" ]; then
