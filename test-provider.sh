@@ -54,6 +54,10 @@ fi
 
 # start server if not running
 echo "checking if server is running"
+ps
+ps -ef | grep stackql
+ps -ef | grep stackql | grep -v grep
+
 if [ -z "$(ps -ef | grep stackql | grep -v grep)" ]; then
     echo "starting server with registry: $REG"
     nohup ./stackql --registry="${REG}" --pgsrv.port=5444 srv &
