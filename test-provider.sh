@@ -54,8 +54,11 @@ fi
 
 # start server if not running
 echo "checking if server is running"
+echo "ps"
 ps
+echo "ps -ef | grep stackql"
 ps -ef | grep stackql
+echo "ps -ef | grep stackql | grep -v grep"
 ps -ef | grep stackql | grep -v grep
 
 if [ -z "$(ps -ef | grep stackql | grep -v grep)" ]; then
