@@ -56,6 +56,8 @@ fi
 echo "checking if server is running"
 echo "ps"
 ps
+echo "ps | grep stackql"
+ps | grep stackql
 echo "ps -ef | grep stackql"
 ps -ef | grep stackql
 echo "ps -ef | grep stackql | grep -v grep"
