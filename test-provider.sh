@@ -4,10 +4,10 @@ regpath=$3
 anoncolcheck=$4
 
 # check for another stackql server running
-if [ -n "$(lsof -i :5444)" ]; then
-    echo "another server is running on port 5444, please stop it"
-    exit 1
-fi
+# if [ -n "$(lsof -i :5444)" ]; then
+#     echo "another server is running on port 5444, please stop it"
+#     exit 1
+# fi
 
 if [ -z "$provider" ]; then
     echo "provider (arg 1) must be set"
