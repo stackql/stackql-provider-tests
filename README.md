@@ -5,12 +5,13 @@ This repository contains a set of tests for StackQL providers. It is intended to
 ## Usage
 
 ```bash
-test-provider.sh <provider_name> [<signed> <provider_path> <test_for_anonymous_cols>]
+test-provider.sh <provider_name> [<signed> <provider_path> <show_columns> <test_for_anonymous_cols>]
 ```
 
 - `provider_name` - the name of the provider to test
 - `signed` - whether the provider is signed or not (default: false)
 - `provider_path` - the path to the provider (default: .)
+- `show_columns` - whether to show columns in output (default: false)
 - `test_for_anonymous_cols` - whether to test for anonymous columns (default: false)
 
 ## Example
@@ -31,16 +32,16 @@ true \
 ```
 
 ```bash
-# test a local aws unsigned provider from another directory
+# test a local aws unsigned provider from another directory showing columns
 sh test-provider.sh \
 aws \
 false \
-/mnt/c/Users/javen/Documents/LocalGitRepos/stackql/local-registry
+/mnt/c/Users/javen/Documents/LocalGitRepos/stackql/local-registry \
+true
 ```
 
-
 ```bash
-# test a local azure unsigned provider from the current directory with anonymous column checks
+# test a local azure unsigned provider from the current directory showing columns
 sh test-provider.sh \
 azure \
 false \

@@ -2,6 +2,15 @@ import sys, datetime
 
 provider = sys.argv[1]
 
+showcols = None
+if len(sys.argv) > 2:
+      showcols = sys.argv[2]
+
+if showcols is not None:
+      showcols = True
+else:
+      showcols = False
+
 start_time = datetime.datetime.now()
 
 import psycopg
@@ -72,6 +81,8 @@ for serviceIx, serviceRow in services.iterrows():
                   total_selectable_resources = total_selectable_resources + 1
                   iql_desc_query = "DESCRIBE EXTENDED %s.%s.%s" % (provider, service, resource)
                   desc = run_query(iql_desc_query)
+                  if showcols:
+                        print(desc)
                   print("%s columns in %s.%s.%s" % (len(desc), provider, service, resource))
 
             if len(methods.query("SQLVerb == 'INSERT'")) > 0:

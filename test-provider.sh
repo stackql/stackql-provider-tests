@@ -1,7 +1,8 @@
 provider=$1
 signed=$2
 regpath=$3
-anoncolcheck=$4
+showcols=$4
+anoncolcheck=$5
 
 if [ -z "$provider" ]; then
     echo "provider (arg 1) must be set"
@@ -56,9 +57,9 @@ else
     echo "server is already running"
 fi
 
-if [ -z "$anoncolcheck" ]; then
+if [ -z "$showcols" ]; then
     python3 test-provider.py $provider
 else
-    # TODO implement anoncolcheck for server tests
-    python3 test-provider.py $provider $anoncolcheck
+    python3 test-provider.py $provider $showcols
+    # TODO implement anoncolcheck for server tests    
 fi
