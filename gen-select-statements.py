@@ -1,6 +1,4 @@
-# export GITHUB_CREDS=$(echo -n 'jeffreyaven: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' | base64 --wrap 0)
-# AUTH_STR='{ "github": { "type": "basic", "credentialsenvvar": "GITHUB_CREDS" } }' 
-# nohup ./stackql --auth="${AUTH_STR}" --pgsrv.port=5444 srv &
+# nohup ./stackql --pgsrv.port=5444 srv &
 # python3 gen-select-statements.py github
 
 import sys, datetime, json
