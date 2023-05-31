@@ -73,6 +73,8 @@ for serviceIx, serviceRow in services.iterrows():
             # SHOW METHODS
             iql_methods_query = "SHOW EXTENDED METHODS IN %s.%s.%s" % (provider, service, resource)
             methods = run_query(iql_methods_query)
+            if showcols:
+                  print(methods)            
             num_methods = len(methods)
             total_methods = total_methods + num_methods
             print("%s methods in %s.%s.%s" % (num_methods, provider, service, resource))

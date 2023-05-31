@@ -32,9 +32,9 @@ true \
 ```
 
 ```bash
-# test a local aws unsigned provider from another directory showing columns
+# test a local google unsigned provider from another directory showing columns
 sh test-provider.sh \
-aws \
+google \
 false \
 /mnt/c/Users/javen/Documents/LocalGitRepos/stackql/local-registry \
 true

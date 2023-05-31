@@ -3,4 +3,5 @@ stackql_linux_amd64.zip
 nohup.out
 /.stackql
 /pystackql
-test.log
+*.log
+stackql-zip
