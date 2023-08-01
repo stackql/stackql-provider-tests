@@ -17,6 +17,8 @@ import psycopg
 from psycopg.rows import dict_row
 import pandas as pd
 
+pd.set_option('display.max_columns', None)
+
 conn = psycopg.connect(
       host="localhost", port=5444,
       autocommit = True,
@@ -42,8 +44,12 @@ def run_query(query):
             data = r.fetchall()
             return pd.DataFrame([i.copy() for i in data])
       except Exception as e:
-            print("ERROR [%s]" % str(e))
-            sys.exit(1)
+            if "SELECT not supported for this resource" in str(e):
+                  print("WARN [%s]" % str(e))
+                  return None
+            else:
+                  print("ERROR [%s]" % str(e))
+                  sys.exit(1)
 
 # SHOW SERVICES
 iql_services_query = "SHOW SERVICES IN %s" % provider
@@ -85,7 +91,8 @@ for serviceIx, serviceRow in services.iterrows():
                   desc = run_query(iql_desc_query)
                   if showcols:
                         print(desc)
-                  print("%s columns in %s.%s.%s" % (len(desc), provider, service, resource))
+                  if desc is not None:
+                        print("%s columns in %s.%s.%s" % (len(desc), provider, service, resource))
 
             if len(methods.query("SQLVerb == 'INSERT'")) > 0:
                   iql_insert_query = "SHOW INSERT INTO %s.%s.%s" % (provider, service, resource)

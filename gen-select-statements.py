@@ -11,6 +11,8 @@ import psycopg
 from psycopg.rows import dict_row
 import pandas as pd
 
+pd.set_option('display.max_columns', None)  
+
 conn = psycopg.connect(
       host="localhost", port=5444,
       autocommit = True,
