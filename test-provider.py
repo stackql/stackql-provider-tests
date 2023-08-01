@@ -44,6 +44,7 @@ def run_query(query):
             data = r.fetchall()
             return pd.DataFrame([i.copy() for i in data])
       except Exception as e:
+            # google workaround
             if "SELECT not supported for this resource" in str(e):
                   print("WARN [%s]" % str(e))
                   return None
