@@ -60,6 +60,7 @@ num_services = len(services)
 total_resources = 0
 total_selectable_resources = 0
 total_methods = 0
+non_selectable_resources = []
 
 # SHOW RESOURCES
 for serviceIx, serviceRow in services.iterrows():
@@ -78,30 +79,38 @@ for serviceIx, serviceRow in services.iterrows():
             print("-------------------------------------------------")
 
             # SHOW METHODS
-            iql_methods_query = "SHOW EXTENDED METHODS IN %s.%s.%s" % (provider, service, resource)
-            methods = run_query(iql_methods_query)
-            if showcols:
-                  print(methods)            
-            num_methods = len(methods)
-            total_methods = total_methods + num_methods
-            print("%s methods in %s.%s.%s" % (num_methods, provider, service, resource))
-
-            if len(methods.query("SQLVerb == 'SELECT'")) > 0:
-                  total_selectable_resources = total_selectable_resources + 1
-                  iql_desc_query = "DESCRIBE EXTENDED %s.%s.%s" % (provider, service, resource)
-                  desc = run_query(iql_desc_query)
+            # AWS Cloud Control workaround 
+            if provider == 'aws' and service not in ('ec2', 's3', 'iam', 'cloud_control'):
+                  pass
+            else:
+                  iql_methods_query = "SHOW EXTENDED METHODS IN %s.%s.%s" % (provider, service, resource)
+                  methods = run_query(iql_methods_query)
                   if showcols:
-                        print(desc)
-                  if desc is not None:
-                        print("%s columns in %s.%s.%s" % (len(desc), provider, service, resource))
+                        print(methods)            
+                  num_methods = len(methods)
+                  total_methods = total_methods + num_methods
+                  print("%s methods in %s.%s.%s" % (num_methods, provider, service, resource))
 
-            if len(methods.query("SQLVerb == 'INSERT'")) > 0:
-                  iql_insert_query = "SHOW INSERT INTO %s.%s.%s" % (provider, service, resource)
-                  show_insert = run_show_insert(iql_insert_query)
+                  if len(methods.query("SQLVerb == 'SELECT'")) > 0:
+                        total_selectable_resources = total_selectable_resources + 1
+                        iql_desc_query = "DESCRIBE EXTENDED %s.%s.%s" % (provider, service, resource)
+                        desc = run_query(iql_desc_query)
+                        if showcols:
+                              print(desc)
+                        if desc is not None:
+                              print("%s columns in %s.%s.%s" % (len(desc), provider, service, resource))
+                  else:
+                        # push to non_selectable_resources
+                        non_selectable_resources.append("%s.%s" % (service, resource))
+
+                  if len(methods.query("SQLVerb == 'INSERT'")) > 0:
+                        iql_insert_query = "SHOW INSERT INTO %s.%s.%s" % (provider, service, resource)
+                        show_insert = run_show_insert(iql_insert_query)
 
 print("%s services processed" % (num_services))
 print("%s total resources processed" % (total_resources))
 print("%s total methods available" % (total_methods))
 print("%s total selectable resources" % (total_selectable_resources))
+print(non_selectable_resources)
 
 print(datetime.datetime.now() - start_time)
