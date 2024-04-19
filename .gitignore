@@ -1,5 +1,8 @@
 stackql
 stackql_linux_amd64.zip
+stackql-aws-cloud-shell.sh
+stackql-azure-cloud-shell.sh
+stackql-google-cloud-shell.sh
 nohup.out
 /.stackql
 /pystackql
