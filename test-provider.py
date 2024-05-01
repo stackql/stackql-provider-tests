@@ -86,50 +86,46 @@ for serviceIx, serviceRow in services.iterrows():
             print("%s.%s.%s (length: %s)" % (provider, service, resource, fqrn_len))
             print("-------------------------------------------------")
 
-            # SHOW METHODS
-            # AWS Cloud Control workaround 
-            # if provider == 'aws' and service not in ('ec2', 's3', 'iam', 'cloud_control'):
-            #       pass
-            # else:
+            # test selectability
+            is_selectable = False
+            iql_desc_query = "DESCRIBE EXTENDED %s.%s.%s" % (provider, service, resource)
+            desc = run_query(iql_desc_query)
+
+            if desc is None:
+                  print("[WARN] SELECT not supported for %s.%s.%s" % (provider, service, resource))
+            else:
+                  if len(desc) == 0:
+                        print("ERROR [no columns found for %s.%s.%s]" % (provider, service, resource))
+                        sys.exit(1)
+                  is_selectable = True
+                  total_selectable_resources = total_selectable_resources + 1
+                  if showcols:
+                        print(desc)
+
+            if not is_selectable:
+                  non_selectable_resources.append("%s.%s" % (service, resource))
+
+            # test methods
             iql_methods_query = "SHOW EXTENDED METHODS IN %s.%s.%s" % (provider, service, resource)
             methods = run_query(iql_methods_query)
             if methods is None:
-                  print("no methods found for %s.%s.%s, checking if its a view" % (provider, service, resource))
-                  iql_desc_query = "DESCRIBE EXTENDED %s.%s.%s" % (provider, service, resource)
-                  desc = run_query(iql_desc_query)
-                  if showcols:
-                        print(desc)
-                  if desc is not None:
-                        total_selectable_resources = total_selectable_resources + 1
-                        print("%s columns in %s.%s.%s (view)" % (len(desc), provider, service, resource))
-                  else:
-                        print("ERROR [no methods found for %s.%s.%s and its not a view]" % (provider, service, resource))
+                  if not is_selectable:
+                        print("ERROR [no methods found for %s.%s.%s]" % (provider, service, resource))
                         sys.exit(1)
             else:
+                  # we have methods      
                   if showcols:
-                        print(methods)            
+                        print(methods)                  
                   num_methods = len(methods)
                   total_methods = total_methods + num_methods
                   print("%s methods in %s.%s.%s" % (num_methods, provider, service, resource))
-
-                  if len(methods.query("SQLVerb == 'SELECT'")) > 0:
-                        iql_desc_query = "DESCRIBE EXTENDED %s.%s.%s" % (provider, service, resource)
-                        desc = run_query(iql_desc_query)
-                        if showcols:
-                              print(desc)
-                        if desc is not None:
-                              print("%s columns in %s.%s.%s" % (len(desc), provider, service, resource))
-                              total_selectable_resources = total_selectable_resources + 1
-                        else:
-                              print("ERROR [no columns found for %s.%s.%s]" % (provider, service, resource))
-                              sys.exit(1)
-                  else:
-                        # push to non_selectable_resources
-                        non_selectable_resources.append("%s.%s" % (service, resource))
-
                   if len(methods.query("SQLVerb == 'INSERT'")) > 0:
-                        iql_insert_query = "SHOW INSERT INTO %s.%s.%s" % (provider, service, resource)
-                        show_insert = run_show_insert(iql_insert_query)
+                        # AWS Cloud Control workaround 
+                        if provider == 'aws' and service not in ('cloud_control', 'ec2_api', 'iam_api', 's3_api', 'cloudwatch_api', 'cloudhsm'):
+                              pass
+                        else:
+                              iql_insert_query = "SHOW INSERT INTO %s.%s.%s" % (provider, service, resource)
+                              show_insert = run_show_insert(iql_insert_query)
 
 print("%s services processed" % (num_services))
 print("%s total resources processed" % (total_resources))
