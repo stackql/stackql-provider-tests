@@ -36,7 +36,10 @@ then
     unzip stackql_linux_amd64.zip
 fi
 
- chmod +x stackql
+chmod +x stackql
+
+# show version
+./stackql --version
 
 # do checks
 
