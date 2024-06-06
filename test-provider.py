@@ -50,6 +50,8 @@ def run_query(query):
                   return None
             elif "the last operation didn't produce a result" in str(e):
                   return None
+            elif "cannot describe view without context" in str(e):
+                  return None
             else:
                   print("ERROR [%s]" % str(e))
                   sys.exit(1)
