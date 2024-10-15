@@ -89,17 +89,18 @@ for serviceIx, serviceRow in services.iterrows():
             print("-------------------------------------------------")
 
             # test selectability
-            is_selectable = False
+            is_selectable = True
             iql_desc_query = "DESCRIBE EXTENDED %s.%s.%s" % (provider, service, resource)
             desc = run_query(iql_desc_query)
 
             if desc is None:
                   print("[WARN] SELECT not supported for %s.%s.%s" % (provider, service, resource))
+                  is_selectable = False
             else:
                   if len(desc) == 0:
                         print("ERROR [no columns found for %s.%s.%s]" % (provider, service, resource))
                         sys.exit(1)
-                  is_selectable = True
+                  
                   total_selectable_resources = total_selectable_resources + 1
                   if showcols:
                         print(desc)
@@ -133,7 +134,9 @@ print("%s services processed" % (num_services))
 print("%s total resources processed" % (total_resources))
 print("%s total methods available" % (total_methods))
 print("%s total selectable resources" % (total_selectable_resources))
-print('non_selectable_resources:')
-print(non_selectable_resources)
+print("%s non selectable resources" % (len(non_selectable_resources)))
+# print('non_selectable_resources:')
+# for i in non_selectable_resources:
+#       print("SHOW METHODS IN azure." + i + ";")
 
 print(datetime.datetime.now() - start_time)
