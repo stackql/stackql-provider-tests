@@ -69,6 +69,16 @@ total_selectable_resources = 0
 total_methods = 0
 non_selectable_resources = []
 
+
+
+def _service_is_show_insert_exmpted(provider: str, svc: str) -> bool:
+      if provider == 'aws' and svc not in ('cloud_control', 'ec2_api', 'iam_api', 's3_api', 'cloudwatch_api', 'cloudhsm'):
+            return True
+      if provider == 'k8s':
+            return True
+      return False
+
+
 # SHOW RESOURCES
 for serviceIx, serviceRow in services.iterrows():
       service = serviceRow['name']
@@ -123,8 +133,7 @@ for serviceIx, serviceRow in services.iterrows():
                   total_methods = total_methods + num_methods
                   print("%s methods in %s.%s.%s" % (num_methods, provider, service, resource))
                   if len(methods.query("SQLVerb == 'INSERT'")) > 0:
-                        # AWS Cloud Control workaround 
-                        if provider == 'aws' and service not in ('cloud_control', 'ec2_api', 'iam_api', 's3_api', 'cloudwatch_api', 'cloudhsm'):
+                        if _service_is_show_insert_exmpted(provider, service):
                               pass
                         else:
                               iql_insert_query = "SHOW INSERT INTO %s.%s.%s" % (provider, service, resource)
