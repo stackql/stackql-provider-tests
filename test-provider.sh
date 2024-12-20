@@ -58,7 +58,7 @@ else
     REG='{"url": "file://'${regpath}'", "localDocRoot": "'${regpath}'", "verifyConfig": {"nopVerify": true}}'
 fi
 
-# Start the server if not running
+# start the server if not running
 echo "checking if server is running"
 if ! pgrep -f "stackql --registry=" > /dev/null; then
     echo "starting server with registry: $REG"
@@ -82,9 +82,6 @@ fi
 # Deactivate virtual environment
 # deactivate
 
-# echo "stopping server..."
-# sh stop.sh
-# Stop the server
 echo "stopping server with PID: $STACKQL_PID"
 kill -9 $STACKQL_PID
 echo "stackql server stopped"
