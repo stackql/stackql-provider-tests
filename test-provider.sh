@@ -58,14 +58,18 @@ else
     REG='{"url": "file://'${regpath}'", "localDocRoot": "'${regpath}'", "verifyConfig": {"nopVerify": true}}'
 fi
 
-# start server if not running
+# Start the server if not running
 echo "checking if server is running"
-if [ -z "$(ps | grep stackql)" ]; then
+if ! pgrep -f "stackql --registry=" > /dev/null; then
     echo "starting server with registry: $REG"
-    nohup ./stackql --registry="${REG}" --pgsrv.port=5444 srv &
+    nohup ./stackql --registry="${REG}" --pgsrv.port=5444 srv &> stackql.log &
+    STACKQL_PID=$!  # Capture the server process ID
+    echo "stackql server started with PID: $STACKQL_PID"
     sleep 5
 else
     echo "server is already running"
+    STACKQL_PID=$(pgrep -f "stackql --registry=")
+    echo "existing stackql server PID: $STACKQL_PID"
 fi
 
 if [ -z "$showcols" ]; then
@@ -78,5 +82,9 @@ fi
 # Deactivate virtual environment
 # deactivate
 
-echo "stopping server..."
-sh stop.sh
+# echo "stopping server..."
+# sh stop.sh
+# Stop the server
+echo "stopping server with PID: $STACKQL_PID"
+kill -9 $STACKQL_PID
+echo "stackql server stopped"
