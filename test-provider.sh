@@ -1,3 +1,5 @@
+#!/bin/bash
+
 provider=$1
 signed=$2
 regpath=$3
@@ -24,9 +26,15 @@ fi
 
 echo "registry path: $regpath"
 
+# Create and activate virtual environment
+
+python3 -m venv venv
+source venv/bin/activate
+
 # install packages
 
-pip install -q -r requirements.txt
+pip install pandas
+pip install psycopg[binary]
 
 # download and unzip stackql binary
 
@@ -66,3 +74,9 @@ else
     python3 test-provider.py $provider $showcols
     # TODO implement anoncolcheck for server tests    
 fi
+
+# Deactivate virtual environment
+deactivate
+
+echo "stopping server..."
+sh stop.sh

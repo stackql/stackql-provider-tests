@@ -69,15 +69,16 @@ total_selectable_resources = 0
 total_methods = 0
 non_selectable_resources = []
 
-
-
 def _service_is_show_insert_exmpted(provider: str, svc: str) -> bool:
       if provider == 'aws' and svc not in ('cloud_control', 'ec2_api', 'iam_api', 's3_api', 'cloudwatch_api', 'cloudhsm'):
             return True
       if provider == 'k8s':
             return True
+      if provider == 'databricks_account':
+            return True
+      if provider == 'databricks_workspace':
+            return True      
       return False
-
 
 # SHOW RESOURCES
 for serviceIx, serviceRow in services.iterrows():
