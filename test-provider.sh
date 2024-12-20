@@ -76,8 +76,7 @@ else
 fi
 
 # Deactivate virtual environment
-ls venv/
-deactivate
+# deactivate
 
 echo "stopping server..."
 sh stop.sh
